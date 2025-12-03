@@ -4,7 +4,7 @@ import java.util.List;
 class Edge{
     int src; #source
     int des; #destination
-    int dirct;# 0 down,1 up
+    int dirct;# 0 sortie,1 entre
     double cap;
     double flow;
     Edge rev;
