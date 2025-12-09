@@ -89,6 +89,9 @@ int main(int argc, char *argv[])
     // pas d'heuristique primale => pas de valeur pour la borne primale pour demarrer
     bestSolution.z = -1.0; 
     bestSolution.x = NULL;
+    //heuristique primale
+    bestSolution.z = -1.0; 
+    bestSolution.x = NULL;
 
 
     // 1. Traitement de la racine ---------------------------------------------
@@ -118,6 +121,13 @@ int main(int argc, char *argv[])
     }
     else
     {
+
+        //modifie
+        if(floor(racine.bDuale.z)<=bestSolution.z){
+            cout<< "sonde par dominance" <<endl;
+        }
+        else{
+
         // separer : choisir la variable fractionnaire la plus proche d'un entier
         int jPos = heuristiqueSeparation(model, tol);
         cout << "Separation sur var x[" << jPos << "]" << endl; 
@@ -134,6 +144,7 @@ int main(int argc, char *argv[])
         DroiteGauche = 'G';
         infererNoeud(model, DroiteGauche, jPos, tol, & bestSolution, & noeudsActifs, & cptNoeuds);
         cout << "\nNbre de noeuds actifs : "<< noeudsActifs.size()<<endl;
+        }
     }
 
 
