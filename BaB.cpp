@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
             }
 
         cout << "ID & z du noeud best-node selectionne : " << itMax->id << " " << vMax << endl;
-
+        /*
         cout << "  id " << itMax->id 
              << " | z  " << itMax->bDuale.z 
              << " | st " << itMax->model->get(GRB_IntAttr_Status) << endl; 
@@ -181,6 +181,19 @@ int main(int argc, char *argv[])
         cout << "Separation sur var x[" << jPos << "]" << endl; 
 
         GRBVar * x = itMax->model->getVars() ;
+        */
+
+        //improve
+
+        if (floor(vMax) <= bestSolution.z) {
+            cout << " (Pruned by bound)" << endl;
+            delete itMax->model; 
+            free(itMax->bDuale.x);
+            noeudsActifs.erase(itMax);
+            continue;
+        }
+        GRBModel *currentModel = itMax->model;
+
         char DroiteGauche;
 
         // noeud droite -------------------------------------------------------
