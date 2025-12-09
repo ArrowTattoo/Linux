@@ -622,7 +622,7 @@ void infererNoeud(GRBModel& model, char DroiteGauche, int jPos, double tol, tSol
     }
     */
     else if(floor(model.get(GRB_DoubleAttr_ObjVal))<=bestSolution->z){
-        
+        //cout << "sonde par dominance => couper " << endl;
     }
     // si aucun test declenche => noeud actif
     else
