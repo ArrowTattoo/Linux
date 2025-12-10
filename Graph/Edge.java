@@ -2,9 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Edge{
-    int src; #source
-    int des; #destination
-    int dirct;# 0 sortie,1 entre
+    int src; //source
+    int des; //destination
+    int dirct;// 0 sortie,1 entre
     double cap;
     double flow;
     Edge rev;

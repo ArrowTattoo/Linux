@@ -6,7 +6,7 @@ class construction{
     private List<List<Edge>> reseau;
 
     private int m,n;
-    private int s,t; #s noir,t blance
+    private int s,t; //s noir,t blance
     private int numNode;
 
     public construction(int m,int n){
@@ -69,6 +69,7 @@ class construction{
         for (int i = 0; i < numNode; i++) {
             tmp[i] = null;
         }
+        //si on  peut visit c'est True,sinon False
         boolean[] visit = new boolean[numNode];
         List<Integer> l= new ArrayList<>();
         l.add(this.s);
@@ -90,9 +91,40 @@ class construction{
         }
         return false;
     }
-    public 
+    public CalculFlotMAX(){
+
+    }
 
     public void CalculCoupeMin(){
+        //si on  peut visit c'est True,sinon False
+        boolean[] visit = new boolean[numNode];
+        List<Integer> l= new ArrayList<>();
+        l.add(this.s);
+        visit[this.s] = true;  
+
+        while (!l.isEmpty()) {
+            int u = l.remove(0); 
+            for (Edge e : reseau.get(u)) {
+                int v = e.des;
+                if (!visit[v] && (e.cap - e.flow > 0)) {
+                    tmp[v] = e;
+                    visit[v] = true;
+                    l.add(v);
+                }
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                int node = i * m + j + 1;
+                if (visit[node]) {
+                    System.out.print("A "); 
+                } 
+                else {
+                    System.out.print("B ");
+                }
+            }
+        }
+
 
     }
 
