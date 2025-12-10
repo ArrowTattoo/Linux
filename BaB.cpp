@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     bestSolution.x = NULL;
     //heuristique primale
     bestSolution.z = -1.0; 
-    bestSolution.x = NULL;
+    bestSolution.x = ;
 
 
     // 1. Traitement de la racine ---------------------------------------------
