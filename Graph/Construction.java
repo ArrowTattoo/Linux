@@ -83,7 +83,7 @@ class construction{
                     tmp[v] = e;
                     visit[v] = true;
                     l.add(v);
-                    if (v == t) {
+                    if (v == this.t) {
                         return true;
                     }
                 }
@@ -126,6 +126,9 @@ class construction{
         }
 
 
+    }
+    public ResoudreBinIm(){
+        
     }
 
 }
