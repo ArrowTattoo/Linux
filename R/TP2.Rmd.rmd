@@ -60,8 +60,8 @@ covX
 
 ```{r}
 eigenRes = eigen(covX)
-eigenValues = eigenRes$values
-eigenVector = eigenRes$vector
+eigenValues = eigenRes$values 特征值
+eigenVector = eigenRes$vector 特征向量
 print(eigenValues)
 print(eigenVector)
 ```
@@ -225,6 +225,15 @@ eigVal=PCAglass$sdev^2
 varpercent = (eigVal / sum(eigVal))*100
 barplot(varpercent,main = "exp %")
 ```
+
+# --- 创建汇总表格 ---
+eig_df <- data.frame(
+  Dimension = 1:length(eigenvalues),
+  Eigenvalue = round(eigenvalues, 3),
+  Variance_Percent = round(var_percent, 2),
+  Cumulative_Variance = round(cum_var_percent, 2)
+)
+print(eig_df)
 在这里决定保留几个主成分
 # 依据: 
 # 1. Kaiser准则 (特征值 > 1)
