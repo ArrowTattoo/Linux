@@ -45,4 +45,9 @@ def optimize(x,y,type):
                 elif type=="L2":
                     loss=np.sum(e**2)
                 elif type=="L_inf":
-                    loss=np.max（e）
+                    loss=np.max(e)
+                if loss < best_loss:
+                    best_loss = loss
+                    a_best,b_best,c_best = a, b, c
+    return a_best,b_best,c_best
+
