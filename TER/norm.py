@@ -55,9 +55,6 @@ def experiment(data_type,):
 
 
 
-
-# 3. 实验运行器
-def run_experiment(noise_type, ax):
     
     # --- 绘图 ---
     # 画观测点
