@@ -26,6 +26,13 @@ def generate_uniform_data(true_params,NB_Data):
     y=y_true+noise
     return x,y,y_true
 
+def generate_laplace_data(true_params):
+    x = np.linspace(-2, 2, 50)
+    y_true = calculateY(x, true_params)
+    noise = np.random.laplace(0, 0.5, size=len(x))
+    y = y_true + noise
+    return x, y, y_true
+
 def loss_l1(params,x,y):
     y_guess=calculateY(x,params)
     return np.sum(np.abs(y-y_guess))
@@ -42,6 +49,9 @@ def experiment(data_type,ax,NB_Data):
     if data_type=="Uniform":
         x,y,y_true=generate_uniform_data(true_params,NB_Data)
         title = "Uniform"
+    elif data_type == "Laplace":
+        x, y, y_true = generate_laplace_data(true_params)
+        title= "Laplace"
     else:
         x,y,y_true=generate_normal_data(true_params,NB_Data)
         title = "Normal"
@@ -82,7 +92,12 @@ plt.figure(figsize=(8, 6))
 ax2 = plt.gca() 
 res_uniform = experiment('Uniform', ax2, NB_Data) 
 
+plt.figure(figsize=(8, 6))
+ax3 = plt.gca()
+res_laplace = experiment('Laplace', ax3, NB_Data)
+
 print(f"Normal e_L1: {res_normal['L1_Error']:.4f},e_L2: {res_normal['L2_Error']:.4f},e_L_inf: {res_normal['L_inf_Error']:.4f}")
 print(f"Uniform e_L1: {res_uniform['L1_Error']:.4f},e_L2: {res_uniform['L2_Error']:.4f},e_L_inf: {res_uniform['L_inf_Error']:.4f}")
+print(f"Laplace e_L1: {res_laplace['L1_Error']:.4f},e_L2: {res_laplace['L2_Error']:.4f},e_L_inf: {res_laplace['L_inf_Error']:.4f}")
 
 plt.show()
