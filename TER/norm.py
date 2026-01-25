@@ -38,7 +38,7 @@ def loss_l_inf(params,x,y):
     return np.max(np.abs(y-y_guess))
 
 def experiment(data_type,ax):
-    if data_type=="uniform":
+    if data_type=="Uniform":
         x,y,y_true=generate_uniform_data(true_params)
         title = "Uniform"
     else:
@@ -54,20 +54,12 @@ def experiment(data_type,ax):
     e_l_inf = np.sum(np.abs(true_params - res_l_inf.x))
     ax.set_title(title)
 
-
-
-
+    ax.scatter(x, y, color='gray', alpha=0.5, label='Points')
+    ax.plot(x, y_true, 'k--', linewidth=2, label='True Truth ')
     
-    # --- 绘图 ---
-    # 画观测点
-    ax.scatter(x, y, color='gray', alpha=0.5, label='Observed Data (Points)')
-    # 画真值线
-    ax.plot(x, y_true, 'k--', linewidth=2, label='True Truth (Red Line Hidden)')
-    
-    # 画预测线
-    ax.plot(x, calculateY(x, res_l1.x), 'b-', alpha=0.8, label=f'L1 Fit (Err={e_l1:.2f})')
-    ax.plot(x, calculateY(x, res_l2.x), 'r-', alpha=0.8, label=f'L2 Fit (Err={e_l2:.2f})')
-    ax.plot(x, calculateY(x, res_l_inf.x), 'g-', alpha=0.8, label=f'L_inf Fit (Err={e_l_inf:.2f})')
+    ax.plot(x, calculateY(x, res_l1.x), 'b-', alpha=0.8, label=f'L1 (E={e_l1:.2f})')
+    ax.plot(x, calculateY(x, res_l2.x), 'r-', alpha=0.8, label=f'L2 (E={e_l2:.2f})')
+    ax.plot(x, calculateY(x, res_l_inf.x), 'g-', alpha=0.8, label=f'L_inf (E={e_l_inf:.2f})')
 
 
     ax.legend()
@@ -79,22 +71,17 @@ def experiment(data_type,ax):
         "L_inf_Error": e_l_inf
     }
 
-print("正在生成第一张图...")
-# 1. 创建第一个窗口 (Figure 1)
+
 plt.figure(figsize=(8, 6)) 
-ax1 = plt.gca() # 获取当前窗口的画板 (Get Current Axis)
-res_normal = experiment('Normal', ax1) # 在这个画板上画正态分布实验
+ax1 = plt.gca() 
+res_normal = experiment('Normal', ax1) 
 
-print("正在生成第二张图...")
-# 2. 创建第二个窗口 (Figure 2)
+
 plt.figure(figsize=(8, 6))
-ax2 = plt.gca() # 获取新的当前画板
-res_uniform = experiment('uniform', ax2) # 在这个画板上画均匀分布实验
+ax2 = plt.gca() 
+res_uniform = experiment('Uniform', ax2) 
 
-# 打印数值结果
-print("\n=== 实验结果 ===")
-print(f"正态分布 L1误差: {res_normal['L1_Error']:.4f}")
-print(f"均匀分布 L1误差: {res_uniform['L1_Error']:.4f}")
+print(f"Normal e_L1: {res_normal['L1_Error']:.4f},e_L2: {res_normal['L2_Error']:.4f},e_L_inf: {res_normal['L_inf_Error']:.4f}")
+print(f"Uniform e_L1: {res_uniform['L1_Error']:.4f},e_L2: {res_uniform['L2_Error']:.4f},e_L_inf: {res_uniform['L_inf_Error']:.4f}")
 
-# 显示所有窗口
 plt.show()
