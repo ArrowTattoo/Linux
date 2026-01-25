@@ -3,23 +3,24 @@ import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 
 np.random.seed(42)
-true_params=np.array([0,0,0])
+true_params=np.array([1,0,2])
+NB_Data=50
 
 def calculateY(x,params):
     a,b,c=params
     # f(x)=ax^2+bx+c
     return a*x**2+b*x+c
 
-def generate_normal_data(true_params):
-    x = np.linspace(-2, 2, 50)
+def generate_normal_data(true_params,NB_Data):
+    x = np.linspace(-2, 2, NB_Data)
     y_true=calculateY(x,true_params)
     noise=np.random.normal(0,1.5,size=len(x))
     y=y_true+noise
     return x,y,y_true
 
 
-def generate_uniform_data(true_params):
-    x = np.linspace(-2, 2, 50)
+def generate_uniform_data(true_params,NB_Data):
+    x = np.linspace(-2, 2, NB_Data)
     y_true=calculateY(x,true_params)
     noise=np.random.uniform(-2.5,2.5,size=len(x))
     y=y_true+noise
@@ -37,12 +38,12 @@ def loss_l_inf(params,x,y):
     y_guess=calculateY(x,params)
     return np.max(np.abs(y-y_guess))
 
-def experiment(data_type,ax):
+def experiment(data_type,ax,NB_Data):
     if data_type=="Uniform":
-        x,y,y_true=generate_uniform_data(true_params)
+        x,y,y_true=generate_uniform_data(true_params,NB_Data)
         title = "Uniform"
     else:
-        x,y,y_true=generate_normal_data(true_params)
+        x,y,y_true=generate_normal_data(true_params,NB_Data)
         title = "Normal"
     initial = [1,1,1]
     res_l1 = minimize(loss_l1, initial, args=(x, y), method='Nelder-Mead')
@@ -74,12 +75,12 @@ def experiment(data_type,ax):
 
 plt.figure(figsize=(8, 6)) 
 ax1 = plt.gca() 
-res_normal = experiment('Normal', ax1) 
+res_normal = experiment('Normal', ax1, NB_Data) 
 
 
 plt.figure(figsize=(8, 6))
 ax2 = plt.gca() 
-res_uniform = experiment('Uniform', ax2) 
+res_uniform = experiment('Uniform', ax2, NB_Data) 
 
 print(f"Normal e_L1: {res_normal['L1_Error']:.4f},e_L2: {res_normal['L2_Error']:.4f},e_L_inf: {res_normal['L_inf_Error']:.4f}")
 print(f"Uniform e_L1: {res_uniform['L1_Error']:.4f},e_L2: {res_uniform['L2_Error']:.4f},e_L_inf: {res_uniform['L_inf_Error']:.4f}")
