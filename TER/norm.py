@@ -40,8 +40,10 @@ def loss_l_inf(params,x,y):
 def experiment(data_type,ax):
     if data_type=="uniform":
         x,y,y_true=generate_uniform_data(true_params)
+        title = "Uniform"
     else:
         x,y,y_true=generate_normal_data(true_params)
+        title = "Normal"
     initial = [1,1,1]
     res_l1 = minimize(loss_l1, initial, args=(x, y), method='Nelder-Mead')
     res_l2 = minimize(loss_l2, initial, args=(x, y), method='Nelder-Mead')
@@ -50,7 +52,7 @@ def experiment(data_type,ax):
     e_l1 = np.sum(np.abs(true_params - res_l1.x))
     e_l2 = np.sum(np.abs(true_params - res_l2.x))
     e_l_inf = np.sum(np.abs(true_params - res_l_inf.x))
-
+    ax.set_title(title)
 
 
 
@@ -77,19 +79,22 @@ def experiment(data_type,ax):
         "L_inf_Error": e_l_inf
     }
 
-# 4. 主程序
-fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+print("正在生成第一张图...")
+# 1. 创建第一个窗口 (Figure 1)
+plt.figure(figsize=(8, 6)) 
+ax1 = plt.gca() # 获取当前窗口的画板 (Get Current Axis)
+res_normal = experiment('Normal', ax1) # 在这个画板上画正态分布实验
 
-# 实验 1: 正态分布
-res_normal = experiment('Normal', axes[0])
+print("正在生成第二张图...")
+# 2. 创建第二个窗口 (Figure 2)
+plt.figure(figsize=(8, 6))
+ax2 = plt.gca() # 获取新的当前画板
+res_uniform = experiment('uniform', ax2) # 在这个画板上画均匀分布实验
 
-# 实验 2: 均匀分布
-res_uniform = experiment('Uniform', axes[1])
+# 打印数值结果
+print("\n=== 实验结果 ===")
+print(f"正态分布 L1误差: {res_normal['L1_Error']:.4f}")
+print(f"均匀分布 L1误差: {res_uniform['L1_Error']:.4f}")
 
-plt.tight_layout()
-print("=== 实验结果: 参数误差 (越小越好) ===")
-print(f"正态分布环境: \n  L1误差: {res_normal['L1_Error']:.4f}\n  L2误差: {res_normal['L2_Error']:.4f}\n  L_inf误差: {res_normal['L_inf_Error']:.4f}")
-print("-" * 30)
-print(f"均匀分布环境: \n  L1误差: {res_uniform['L1_Error']:.4f}\n  L2误差: {res_uniform['L2_Error']:.4f}\n  L_inf误差: {res_uniform['L_inf_Error']:.4f}")
-
-plt.show() # 显示图像
+# 显示所有窗口
+plt.show()
