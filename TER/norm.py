@@ -4,7 +4,7 @@ from scipy.optimize import minimize
 
 np.random.seed(42)
 true_params=np.array([1,0,2])
-NB_Data=50
+NB_Data=200
 
 def calculateY(x,params):
     a,b,c=params
@@ -63,7 +63,7 @@ def experiment(data_type,ax,NB_Data):
     e_l1 = np.sum(np.abs(true_params - res_l1.x))
     e_l2 = np.sum(np.abs(true_params - res_l2.x))
     e_l_inf = np.sum(np.abs(true_params - res_l_inf.x))
-    ax.set_title(title)
+    ax.set_title(title + " nb_data=" + str(NB_Data))
 
     ax.scatter(x, y, color='gray', alpha=0.5, label='Points')
     ax.plot(x, y_true, 'k--', linewidth=2, label='True Truth ')
