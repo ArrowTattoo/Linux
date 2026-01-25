@@ -25,19 +25,19 @@ def generate_uniform_data(true_params):
     y=y_true+noise
     return x,y,y_true
 
-def loss_l1(x,y,params):
+def loss_l1(params,x,y):
     y_guess=calculateY(x,params)
     return np.sum(np.abs(y-y_guess))
 
-def loss_l2(x,y,params):
+def loss_l2(params,x,y):
     y_guess=calculateY(x,params)
     return np.sum((y-y_guess)**2)
 
-def loss_l_inf(x,y,params):
+def loss_l_inf(params,x,y):
     y_guess=calculateY(x,params)
     return np.max(np.abs(y-y_guess))
 
-def experiment(data_type,):
+def experiment(data_type,ax):
     if data_type=="uniform":
         x,y,y_true=generate_uniform_data(true_params)
     else:
@@ -58,33 +58,33 @@ def experiment(data_type,):
     
     # --- 绘图 ---
     # 画观测点
-    ax.scatter(x, y_observed, color='gray', alpha=0.5, label='Observed Data (Points)')
+    ax.scatter(x, y, color='gray', alpha=0.5, label='Observed Data (Points)')
     # 画真值线
     ax.plot(x, y_true, 'k--', linewidth=2, label='True Truth (Red Line Hidden)')
     
     # 画预测线
-    ax.plot(x, model_func(x, res_l1.x), 'b-', alpha=0.8, label=f'L1 Fit (Err={err_l1:.2f})')
-    ax.plot(x, model_func(x, res_l2.x), 'r-', alpha=0.8, label=f'L2 Fit (Err={err_l2:.2f})')
-    ax.plot(x, model_func(x, res_linf.x), 'g-', alpha=0.8, label=f'L_inf Fit (Err={err_linf:.2f})')
-    
-    ax.set_title(title)
+    ax.plot(x, calculateY(x, res_l1.x), 'b-', alpha=0.8, label=f'L1 Fit (Err={e_l1:.2f})')
+    ax.plot(x, calculateY(x, res_l2.x), 'r-', alpha=0.8, label=f'L2 Fit (Err={e_l2:.2f})')
+    ax.plot(x, calculateY(x, res_l_inf.x), 'g-', alpha=0.8, label=f'L_inf Fit (Err={e_l_inf:.2f})')
+
+
     ax.legend()
     ax.grid(True, alpha=0.3)
     
     return {
-        "L1_Error": err_l1,
-        "L2_Error": err_l2,
-        "L_inf_Error": err_linf
+        "L1_Error": e_l1,
+        "L2_Error": e_l2,
+        "L_inf_Error": e_l_inf
     }
 
 # 4. 主程序
 fig, axes = plt.subplots(1, 2, figsize=(16, 6))
 
 # 实验 1: 正态分布
-res_normal = run_experiment('Normal', axes[0])
+res_normal = experiment('Normal', axes[0])
 
 # 实验 2: 均匀分布
-res_uniform = run_experiment('Uniform', axes[1])
+res_uniform = experiment('Uniform', axes[1])
 
 plt.tight_layout()
 print("=== 实验结果: 参数误差 (越小越好) ===")
