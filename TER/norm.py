@@ -10,7 +10,7 @@ def calculateY(x,params):
     a,b,c=params
     # f(x)=ax^2+bx+c
     return a*x**2+b*x+c
-
+ 
 def generate_normal_data(true_params,NB_Data):
     x = np.linspace(-2, 2, NB_Data)
     y_true=calculateY(x,true_params)
