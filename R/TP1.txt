@@ -1,0 +1,196 @@
+v1 = 1:20                   # 生成 1 到 20 的整数序列
+v2 = sample(1:20, size = length(v1), replace = TRUE) # 随机抽样。replace=TRUE 表示可以重复抽样（有放回）
+v1[v1<5]=0                  # 逻辑索引：将 v1 中小于 5 的元素赋值为 0
+v2[v2<5]=0                  # 同上，处理 v2
+sum(v1)                     # 求和
+mean(v1)                    # 求平均值
+median(v1)                  # 求中位数
+sd(v1)                      # 求标准差 (Standard Deviation)
+v1*v2                       # 对应元素相乘（注意：这不是矩阵乘法，是点对点乘）
+
+
+M1 = matrix(1:25, nrow = 5, ncol = 5, byrow = TRUE) # 创建 5x5 矩阵，按行填充数据
+M2 = matrix(sample(1:20, size = length(M1), replace = TRUE), nrow = 5, ncol = 5, byrow = TRUE)
+matrix(c(1,2,3),2,4)        # 尝试创建一个2行4列矩阵，数据不够时会循环填充 (1,2,3,1,2,3,1,2)
+M1[2,3]                     # 提取第 2 行，第 3 列的元素
+M1[2,]                      # 提取第 2 行的所有元素
+M1[,3]                      # 提取第 3 列的所有元素
+
+
+
+
+M1t = t(M1)                 # t() 是转置函数 (行列互换)
+trace = sum(diag(M1t))      # 迹 (Trace)：对角线元素之和。diag() 提取对角线
+rowMeans(M2)                # 快速计算每行的平均值
+colMeans(M2)                # 快速计算每列的平均值
+
+# apply(数据, 维度, 函数)
+apply(M2, 1, min)           # 对 M2 的每一行 (1) 求最小值
+apply(M1, 2, min)           # 对 M1 的每一列 (2) 
+
+
+第二部分
+
+# 创建数据框
+df = data.frame(
+  id = c(1:100), 
+  age = sample(18:30, size = 100, replace = TRUE), 
+  height = round(runif(100, min = 150, max = 200), 2) # runif 生成均匀分布随机小数，round 保留2位小数
+)
+
+head(df)                    # 查看前 6 行
+weight = round(runif(100, min = 50, max = 100), 2)
+df$weight = weight          # 向 df 添加新列 weight
+
+# 计算 BMI = 体重(kg) / 身高(m)^2
+# 注意：height 是厘米，所以除以 100 换算成米
+df$BMI = round(df$weight/((df$height/100)^2), 2)
+
+apply(df, 2, mean)          # 计算每一列的平均值（注意：id列算平均值无意义，但代码会执行）
+
+# 绘图 plot(x轴, y轴, ...)
+plot(df$height, df$weight, 
+     col = df$BMI,          # 颜色根据 BMI 数值变化（注意：直接用数值做颜色其实效果不好，通常需要调色板）
+     pch = 16,              # 点的形状（实心圆点）
+     main = "BMI colour",   # 标题
+     xlab = "height", ylab = "weight") # 坐标轴标签
+
+
+=================================================
+# rnorm(数量, 均值, 标准差)：生成正态分布随机数
+X = data.frame(
+  D1= rnorm(100, mean = 1, sd = 2),
+  D2= rnorm(100, mean = 4, sd = 0.4),
+  group = "X"
+)
+
+Y = data.frame(
+  D1= rnorm(100, mean = 3, sd = 0.7),
+  D2= rnorm(100, mean = 1, sd = 1.2),
+  group = "Y"
+)
+
+groupMap = c("X" = "red" , "Y" = "green") # 创建一个颜色映射向量
+
+Z <- rbind(X, Y)            # rbind (Row Bind)：将 X 和 Y 上下拼接到一起
+
+plot(Z$D1, Z$D2, 
+     col = groupMap[Z$group]) # 妙用：根据 group 列的值("X"或"Y")去 groupMap 查找对应的颜色
+
+
+============================================================
+距离度量
+indi = sample(1:nrow(Z), 2) # 随机选两个样本的行号
+rowUn = Z[indi[1], 1:2]     # 提取第一个样本的数值列 (D1, D2)
+rowDeux = Z[indi[2], 1:2]   # 提取第二个样本
+
+# 欧氏距离 (Euclidean): 直线距离
+euDistance12 = sqrt(sum((rowUn-rowDeux)^2)) 
+
+# 曼哈顿距离 (Manhattan): 城市街区距离（绝对值之和）
+manhaDis12 = sum(abs(rowUn-rowDeux))
+
+=============================================
+使用内置函数与热力图
+disZEX = Z[, 1:2]           # 只取数值列，去掉 "group" 标签列
+disZ = dist(disZEX)         # 自动计算所有点两两之间的欧氏距离
+disMatrix = as.matrix(disZ) # 将距离对象转换为标准矩阵格式
+heatmap(disMatrix, main = "distance matrix", symm = TRUE) # 绘制热力图，颜色越深/浅代表距离越远/近
+
+=========================================================
+disZEX = Z[, 1:2]           # 只取数值列，去掉 "group" 标签列
+disZ = dist(disZEX)         # 自动计算所有点两两之间的欧氏距离
+disMatrix = as.matrix(disZ) # 将距离对象转换为标准矩阵格式
+heatmap(disMatrix, main = "distance matrix", symm = TRUE) # 绘制热力图，颜色越深/浅代表距离越远/近
+
+=======================================
+寻找最远和最近的点
+maxMatrix = max(disMatrix)  # 找最大距离
+farPoint = which(disMatrix == maxMatrix, arr.ind = TRUE) # 找出最大距离对应的行和列索引
+
+# 找最近点（需技巧）：
+matrixShort = disMatrix
+diag(matrixShort) = NA      # 把对角线（自己到自己的距离0）设为 NA，否则最小值永远是 0
+minMatrix = min(matrixShort, na.rm = TRUE) # 忽略 NA 求最小值
+shortPoint = which(matrixShort == minMatrix, arr.ind = TRUE)
+================================================
+马氏距离 (Mahalanobis Distance)
+# 定义函数：d = sqrt((x-y)' * M * (x-y))
+distanceMat = function(x, y, M){
+  x = as.numeric(x); y = as.numeric(y)
+  difVector = x - y
+  distSQ = t(difVector) %*% M %*% difVector # %*% 是矩阵乘法
+  return(sqrt(drop(distSQ)))
+}
+
+varianceZ = apply(disZEX, 2, var) # 计算各列方差
+Mcorr = diag(1/varianceZ)         # 创建权重矩阵（方差的倒数作为对角线），用于标准化
+distanceMat(disZEX[7,], disZEX[23,], Mcorr) # 计算第7和第23个样本的马氏距离
+
+================================================
+惯量 (Inertia)
+# 定义惯量函数：计算所有点到重心 g 的距离平方和
+inertie = function(X, M){
+  g = apply(X, 2, mean)       # 计算重心（每列的平均值）
+  totalInertia = 0
+  n = nrow(X)
+  for(i in 1:n){
+    xi = X[i,]
+    d = distanceMat(xi, g, M) # 调用上面定义的距离函数
+    totalInertia = totalInertia + d^2
+  }
+  return(totalInertia)
+}
+
+euMatirx = diag(1, ncol(disZEX)) # 单位矩阵（对应欧氏距离）
+inertie(disZEX, euMatirx)        # 计算欧氏惯量
+
+inertie(disZEX, Mcorr)           # 计算标准化后的惯量（马氏距离下）
+
+=================================================
+# scale.=TRUE 非常重要，表示先将数据标准化（均值0，方差1），避免量纲影响
+resPCA = prcomp(disZEX, center = TRUE, scale. = TRUE)
+summary(resPCA) # 查看结果，包含 Standard deviation, Proportion of Variance (方差贡献率)
+
+cumVar = summary(resPCA)$importance[3,] # 提取“累积方差贡献率”
+nb1er90 = which(cumVar >= 0.9)[1]       # 找到第一个累积贡献超过 90% 的主成分个数
+
+original_class = Z$group
+point_colors = ifelse(original_class == "X", "red", "blue") # 根据原始组别设定颜色
+
+plot(resPCA$x[,1], resPCA$x[,2],  # 画出数据在 PC1 和 PC2 上的投影坐标（Scores）
+     col = point_colors,
+     pch = 16,
+     xlab = "PC1", ylab = "PC2", main = "个体图表")
+abline(h = 0, v = 0, lty = 2, col = "gray") # 添加参考线
+legend("topright", legend = c("X", "Y"), col = c("red", "blue"), pch = 19)
+
+plot(resPCA$rotation,  # rotation 存储了载荷 (Loadings)，即原始变量与主成分的相关性
+     type = "n",       # "n" 表示只建立坐标系，不画点
+     xlim = c(-1,1), ylim = c(-1,1)) # 限制范围在 -1 到 1
+abline(h = 0, v = 0, lty = 2, col = "gray")
+
+# 画箭头，表示变量的方向和强度
+arrows(x0 = 0, y0 = 0, x1 = resPCA$rotation[, 1], y1 = resPCA$rotation[, 2], col = "red", length = 0.1)
+text(resPCA$rotation[, 1], resPCA$rotation[, 2], labels = rownames(resPCA$rotation), col = "darkred", pos = 3)
+
+# A. 提取数据
+scores = resPCA$x[,1:2]         # 得分矩阵 (Samples x PCs)
+loading = resPCA$rotation[,1:2] # 载荷矩阵 (Variables x PCs)
+
+# B. 逆运算 (此时得到的是标准化后的近似数据)
+# 公式：X_scaled ≈ Scores * Loadings'
+reconScaled <- scores %*% t(loading)
+
+# C. 反标准化 (Un-scale)
+# 原始公式：Scaled = (X - center) / scale
+# 还原公式：X = Scaled * scale + center
+scaleVec = resPCA$scale
+centerVec = resPCA$center
+# t(t(...) * scale) 利用了 R 的广播机制，按列乘以标准差
+reconFinal = t(t(reconScaled) * scaleVec + centerVec)
+
+# D. 计算均方误差 (MSE)
+matrixZ = as.matrix(disZEX)
+mse = mean((matrixZ - reconFinal)^2) # 计算原始数据与还原数据之间的平均平方差
+mse # 如果保留了所有主成分，MSE 应接近 0；如果只保留了部分，MSE 代表丢失的信息量
